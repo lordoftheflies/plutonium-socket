@@ -1,0 +1,36 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="plutonium-socket">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    /**
+     * `plutonium-socket`
+     * Websocket client.
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class PlutoniumSocket extends Polymer.Element {
+      static get is() { return 'plutonium-socket'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'plutonium-socket'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(PlutoniumSocket.is, PlutoniumSocket);
+  </script>
+</dom-module>
