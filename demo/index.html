@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
@@ -13,18 +13,44 @@
     <link rel="import" href="../plutonium-socket.html">
 
     <custom-style>
-      <style is="custom-style" include="demo-pages-shared-styles">
-      </style>
+        <style is="custom-style" include="demo-pages-shared-styles">
+        </style>
     </custom-style>
-  </head>
-  <body>
-    <div class="vertical-section-container centered">
-      <h3>Basic plutonium-socket demo</h3>
-      <demo-snippet>
+</head>
+<body>
+<div class="vertical-section-container centered">
+    <h3>Basic plutonium-socket demo</h3>
+    <demo-snippet>
         <template>
-          <plutonium-socket></plutonium-socket>
+            <p id="output"></p>
+            <input id="commandLine">
+            <button id="submit">Send</button>
+            <plutonium-socket id="socket" protocol="wss" host="echo.websocket.org" auto-start></plutonium-socket>
         </template>
-      </demo-snippet>
-    </div>
-  </body>
+    </demo-snippet>
+</div>
+
+<script>
+    let socket = document.getElementById('socket');
+    let output = document.getElementById('output');
+    let submit = document.getElementById('submit');
+    let commandLine = document.getElementById('commandLine');
+
+
+    socket.addEventListener('socket-open', function () {
+
+    });
+    socket.addEventListener('socket-close', function () {
+
+    });
+    socket.addEventListener('socket-message', function () {
+        output.innerText = socket.lastResponse;
+    });
+
+    submit.addEventListener('click', function () {
+        socket.body = commandLine.value;
+        socket.send(commandLine.value);
+    });
+</script>
+</body>
 </html>

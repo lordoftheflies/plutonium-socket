@@ -1,36 +1,235 @@
 <link rel="import" href="../polymer/polymer-element.html">
 
 <dom-module id="plutonium-socket">
-  <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-    <h2>Hello [[prop1]]!</h2>
-  </template>
+    <template>
+        <style>
+            :host {
+                display: none;
+            }
+        </style>
+        <table>
 
-  <script>
-    /**
-     * `plutonium-socket`
-     * Websocket client.
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/index.html
-     */
-    class PlutoniumSocket extends Polymer.Element {
-      static get is() { return 'plutonium-socket'; }
-      static get properties() {
-        return {
-          prop1: {
-            type: String,
-            value: 'plutonium-socket'
-          }
-        };
-      }
-    }
+        </table>
+    </template>
 
-    window.customElements.define(PlutoniumSocket.is, PlutoniumSocket);
-  </script>
+    <script>
+        /**
+         * `plutonium-socket`
+         * Websocket client.
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/index.html
+         */
+        class PlutoniumSocket extends Polymer.Element {
+            static get is() {
+                return 'plutonium-socket';
+            }
+
+            static get observers() {
+                return [
+                    'observeSocket(url)'
+                ]
+            }
+
+            static get properties() {
+                return {
+                    url: {
+                        type: String,
+                        notify: true,
+                        reflectToAttribute: true,
+                        computed: 'computeUrl(protocol, host, port, path)'
+                    },
+
+                    protocol: {
+                        type: String,
+                        notify: true,
+                        reflectToAttribute: true,
+                        value: () => window.location.protocol == "https:" ? "wss" : "ws"
+                    },
+                    host: {
+                        type: String,
+                        notify: true,
+                        reflectToAttribute: true,
+                        value: () => window.location.host
+                    },
+                    port: {
+                        type: Number,
+                        notify: true,
+                        reflectToAttribute: true,
+                        value: () => null //window.location.port
+                    },
+                    path: {
+                        type: String,
+                        notify: true,
+                        reflectToAttribute: true,
+                        value: () => ''//window.location.pathname
+                    },
+
+                    // socketName: {
+                    //     type: String,
+                    //     notify: true
+                    // },
+                    body: {
+                        type: Object,
+                        notify: true
+                    },
+                    lastResponse: {
+                        type: Object,
+                        notify: true
+                    },
+                    lastError: {
+                        type: Object,
+                        notify: true
+                    },
+
+                    autoStart: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    autoClose: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
+                    },
+                    // successMessage: {
+                    //     type: String,
+                    //     value: 'Websocket connection established.'
+                    // },
+                    // errorMessage: {
+                    //     type: String,
+                    //     value: 'An error occured in websocket exception.'
+                    // },
+                    // asJson: {
+                    //     type: Boolean,
+                    //     notify: true,
+                    //     valure: false
+                    // },
+                    // headers: {
+                    //     type: Object,
+                    //     notify: true,
+                    //     value: {}
+                    // }
+                };
+            }
+
+            constructor() {
+                super();
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+                if (this.autoStart) {
+                    this.observeSocket(this.url, this.protocol);
+                }
+            }
+
+            disconnectedCallback() {
+                super.disconnectedCallback();
+                if (this.autoClose)
+                    this.close();
+            }
+
+            onError(error) {
+                console.debug((this.id ? this.is + '#' + this.id : this.is), 'error', error);
+                this.set('lastError', error);
+                this.dispatchEvent(new CustomEvent('socket-error', {detail: error}));
+            }
+
+            onOpen(event) {
+                console.debug((this.id ? this.is + '#' + this.id : this.is), 'open');
+                this.dispatchEvent(new CustomEvent('socket-open', {}));
+            }
+
+            onMessage(event) {
+                console.debug((this.id ? this.is + '#' + this.id : this.is), 'message', event.data);
+                this.set('lastResponse', event.data);
+                this.dispatchEvent(new CustomEvent('socket-message', {detail: event.data}));
+            }
+
+            onSend(event, details) {
+                this.send(details.message);
+            }
+
+            /**
+             *
+             * @param message
+             */
+            send(message) {
+                this.socket.send(message);
+            }
+
+            /**
+             * Open websocket.
+             */
+            open() {
+                console.debug((this.id ? this.is + '#' + this.id : this.is), 'open');
+                try {
+                    this.socket = this.createSocket(this.get('url'));
+
+                    this.socket.addEventListener('error', this.onError.bind(this));
+                    // this.socket.onerror = this.onError.bind(this);
+                    this.socket.addEventListener('open', this.onOpen.bind(this));
+                    // this.socket.onopen = this.onOpen.bind(this);
+                    this.socket.addEventListener('message', this.onMessage.bind(this)
+                )
+                    ;
+                    // this.socket.onmessage = this.onMessage.bind(this);
+                } catch (err) {
+                    console.warn((this.id ? this.is + '#' + this.id : this.is), 'open failed:', err);
+                    this.close()
+                }
+            }
+
+            /**
+             * Close websocket.
+             */
+            close() {
+                console.debug((this.id ? this.is + '#' + this.id : this.is), 'close socket');
+                try {
+                    if (this.socket) {
+                        this.socket.close();
+                        console.log((this.id ? this.is + '#' + this.id : this.is), 'close websocket for', this.get('url'));
+                    }
+                } catch (err) {
+                    console.warn((this.id ? this.is + '#' + this.id : this.is), 'close failed:', err);
+                } finally {
+                    this.socket = null;
+                }
+                this.dispatchEvent(new CustomEvent('socket-close', {}));
+            }
+
+            createSocket(url) {
+                // let socket = new ReconnectingWebSocket(url);
+                let socket = new WebSocket(url);
+                return socket;
+            }
+
+            /**
+             * Compute URI for websocket
+             * @param protocol Protocol schema could be WS or WSS
+             * @param host Websocket server host
+             * @param port Websocket server port
+             * @param path Websocket path
+             * @returns {string} URL of the websocket
+             */
+            computeUrl(protocol, host, port, path) {
+                let hostWithPort = port ? host + ':' + port : host;
+                let hostPath = protocol + '://' + hostWithPort;
+                return hostPath + path;
+            }
+
+            observeSocket(url) {
+                if (url) {
+                    if (this.socket) {
+                        this.socket.close();
+                    }
+                    this.open()
+                }
+            }
+        }
+
+        window.customElements.define(PlutoniumSocket.is, PlutoniumSocket);
+    </script>
 </dom-module>
