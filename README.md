@@ -1,3 +1,6 @@
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/lordoftheflies/plutonium-socket)
+
+
 # \<plutonium-socket\>
 
 Websocket client.
@@ -23,6 +26,29 @@ bower install --save lordoftheflies/plutonium-socket
 </plutonium-socket>
 
 ```
+
+<!--
+```
+<custom-element-demo>
+  <template>
+    <link rel="import" href="plutonium-socket.html">
+    
+  </template>
+</custom-element-demo>
+```
+-->
+```html
+
+<plutonium-socket 
+    id="socket" 
+    protocol="wss" 
+    host="echo.websocket.org" 
+    auto-start>
+    
+</plutonium-socket>
+```
+
+
 ## Viewing Your Element
 
 ```
@@ -47,3 +73,4 @@ Your application is already set up to be tested via [web-component-tester](https
 5. Submit a pull request :D
 
 ------------
+
