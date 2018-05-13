@@ -28,7 +28,7 @@
 
             static get observers() {
                 return [
-                    'observeSocket(url)'
+                    'observeSocket(url, active)'
                 ]
             }
 
@@ -57,7 +57,7 @@
                         type: Number,
                         notify: true,
                         reflectToAttribute: true,
-                        value: () => null //window.location.port
+                        value: () => window.location.port
                     },
                     path: {
                         type: String,
@@ -92,6 +92,12 @@
                         type: Boolean,
                         notify: true,
                         value: true
+                    },
+
+                    active: {
+                        type: Boolean,
+                        notify: true,
+                        value: () => true
                     },
                     // successMessage: {
                     //     type: String,
@@ -166,7 +172,7 @@
             open() {
                 console.debug((this.id ? this.is + '#' + this.id : this.is), 'open', this.get('url'));
                 try {
-                    this.socket = this.createSocket(this.get('url'));
+                    this.socket = this.createSocket(this.get('url'), this.get('active'));
 
                     this.socket.addEventListener('error', this.onError.bind(this));
                     // this.socket.onerror = this.onError.bind(this);
@@ -218,8 +224,8 @@
                 return hostPath + path;
             }
 
-            observeSocket(url) {
-                if (url) {
+            observeSocket(url, active) {
+                if (url && active) {
                     if (this.socket) {
                         this.socket.close();
                     }
