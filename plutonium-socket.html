@@ -99,6 +99,11 @@
                         notify: true,
                         value: () => true
                     },
+                    asJson: {
+                        type: Boolean,
+                        notify: true,
+                        value: () => true
+                    },
                     // successMessage: {
                     //     type: String,
                     //     value: 'Websocket connection established.'
@@ -150,8 +155,9 @@
 
             onMessage(event) {
                 console.debug((this.id ? this.is + '#' + this.id : this.is), 'message', event.data);
-                this.set('lastResponse', event.data);
-                this.dispatchEvent(new CustomEvent('socket-message', {detail: event.data}));
+                let data = this.get('asJson') ? JSON.parse(event.data) : event.data;
+                this.set('lastResponse', data);
+                this.dispatchEvent(new CustomEvent('socket-message', {detail: data}));
             }
 
             onSend(event, details) {
