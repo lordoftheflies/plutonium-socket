@@ -1,5 +1,5 @@
 {
-  "verbose": false,
+  "verbose": true,
   "plugins": {
     "local": {
       "disabled": false,
@@ -13,6 +13,9 @@
           "disable-gpu"
         ]
       }
+    },
+    "xunit-reporter": {
+      "output": "wct.xml"
     }
   }
 }
