@@ -1,17 +1,17 @@
 {
   "name": "plutonium-socket",
   "description": "Websocket client.",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "main": "plutonium-socket.html",
   "dependencies": {
-    "polymer": "Polymer/polymer#^2.0.2"
+    "polymer": "Polymer/polymer#^2.0.3"
   },
   "devDependencies": {
-    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.2",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.3",
     "web-component-tester": "Polymer/web-component-tester#^6.0.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
   },
   "resolutions": {
-    "polymer": "^2.0.2"
+    "polymer": "^2.0.3"
   }
 }
