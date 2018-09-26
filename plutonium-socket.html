@@ -181,11 +181,8 @@
                     this.socket = this.createSocket(this.get('url'), this.get('active'));
 
                     this.socket.addEventListener('error', this.onError.bind(this));
-                    // this.socket.onerror = this.onError.bind(this);
                     this.socket.addEventListener('open', this.onOpen.bind(this));
-                    // this.socket.onopen = this.onOpen.bind(this);
                     this.socket.addEventListener('message', this.onMessage.bind(this));
-                    // this.socket.onmessage = this.onMessage.bind(this);
                 } catch (err) {
                     console.warn((this.id ? this.is + '#' + this.id : this.is), 'open failed:', err);
                     this.close()
@@ -225,9 +222,12 @@
              * @returns {string} URL of the websocket
              */
             computeUrl(protocol, host, port, path) {
-                let hostWithPort = port ? host + ':' + port : host;
-                let hostPath = protocol + '://' + hostWithPort;
-                return hostPath + path;
+                if (protocol && host && path) {
+                    let hostWithPort = port ? host + ':' + port : host;
+                    let hostPath = protocol + '://' + hostWithPort;
+                    return hostPath + path;
+                }
+
             }
 
             observeSocket(url, active) {
