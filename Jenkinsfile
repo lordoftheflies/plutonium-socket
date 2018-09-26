@@ -34,7 +34,7 @@ pipeline {
                 script {
                     // sh "polymer lint"
                     sh "polymer test --local chrome --config-file wct.conf.json"
-                    junit allowEmptyResults: true, testResults: 'wct.xml'
+                    step([$class: 'XUnitBuilder', testTimeMargin: '3000', thresholdMode: 1, thresholds: [[$class: 'FailedThreshold', failureNewThreshold: '5', failureThreshold: '10', unstableNewThreshold: '2', unstableThreshold: '5'], [$class: 'SkippedThreshold', failureNewThreshold: '', failureThreshold: '', unstableNewThreshold: '', unstableThreshold: '']], tools: [[$class: 'XUnitDotNetTestType', deleteOutputFiles: true, failIfNotNew: true, pattern: 'wct.xml', skipNoTestFiles: false, stopProcessingIfError: true]]])
                 }
 
 
