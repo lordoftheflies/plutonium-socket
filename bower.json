@@ -1,7 +1,7 @@
 {
   "name": "plutonium-socket",
   "description": "Websocket client.",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "main": "plutonium-socket.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.2"
@@ -12,6 +12,6 @@
     "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
   },
   "resolutions": {
-    "polymer": "^2.1.0"
+    "polymer": "^2.0.2"
   }
 }
